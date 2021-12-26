@@ -51,7 +51,6 @@ public class Controller {
 
     public void submit(ActionEvent event) throws IOException {
         this.assignShapes();
-        this.solve();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("solve.fxml"));
         Parent root = loader.load();
@@ -148,9 +147,5 @@ public class Controller {
         while (count-- > 0) {
             shapes.add(this.shapeH);
         }
-    }
-
-    private void solve() {
-        
     }
 }
