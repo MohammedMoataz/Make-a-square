@@ -213,41 +213,31 @@ public class Controller {
         }
     }
 
-    private void rotateShape()  {
-        ArrayList<boolean[][]> newShapes = new ArrayList<>();
-
-        for (boolean[][] shape : this.shapes) {
-            for (boolean[] booleans : shape) {
-                for (boolean aBoolean : booleans) {
-                    System.out.print(aBoolean + " ");
-                }
-                System.out.println();
+    private void rotateShape(boolean[][] matrix) {
+        for (boolean[] array : matrix) {
+            for (boolean cell : array) {
+                System.out.print(cell + " ");
             }
             System.out.println();
         }
-
         System.out.println();
-        for (boolean[][] shape : this.shapes) {
-            int row = shape.length,
-                    col = shape[0].length;
-            boolean[][] newShape = new boolean[col][row];
+
+        int row = matrix.length;
+        int col = matrix[0].length;
+        boolean[][] rotated = new boolean[col][row];
+
+        for (int j = 0; j < col; j++) {
             for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    newShape[j][i] = shape[i][j];
-                }
+                rotated[col - j - 1][i] = matrix[i][j];
             }
-            newShapes.add(newShape);
         }
-        System.out.println();
 
-        for (boolean[][] shape : newShapes) {
-            for (boolean[] booleans : shape) {
-                for (boolean aBoolean : booleans) {
-                    System.out.print(aBoolean + " ");
-                }
-                System.out.println();
+        for (boolean[] array : rotated) {
+            for (boolean cell : array) {
+                System.out.print(cell + " ");
             }
             System.out.println();
         }
+        System.out.println();
     }
 }
