@@ -2,49 +2,26 @@ package sample;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Tree {
-    private static class Node {
-        private boolean[][] matrix;
-        private Thread thread;
-        private List<Node> children;
+public class Tree<T> {
+    private T matrix;
+    private List<Tree<T>> children;
 
-        private Node() {
-            this.matrix = new boolean[][]{
-                    {false, false, false, false},
-                    {false, false, false, false},
-                    {false, false, false, false},
-                    {false, false, false, false}
-            };
-            this.thread = null;
+    public Tree(T matrix) {
+        this.matrix = matrix;
+    }
+
+    public void addChild(T matrix) {
+        if (this.children == null)
             this.children = new ArrayList<>();
-        }
 
-        private Node(boolean[][] matrix) {
-            this.matrix = matrix;
-            this.thread = null;
-            this.children = null;
-        }
+        Tree<T> child = new Tree<>(matrix);
+        this.children.add(child);
     }
 
-    private Node node;
-
-    public Tree() {
-        this.node = new Node();
-    }
-
-    public void addNode(boolean[][] matrix) {
-        if (this.node.children == null)
-            this.node.children = new ArrayList<>();
-
-        Node child = new Node(matrix);
-
-        this.node.children.add(child);
-    }
-
-    public void travers() {
-        for (Node child : this.node.children) {
-
-        }
+    @Override
+    public String toString() {
+        return Objects.toString(this.matrix);
     }
 }
