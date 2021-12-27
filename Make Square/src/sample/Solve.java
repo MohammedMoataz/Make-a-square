@@ -19,21 +19,21 @@ public class Solve {
     @FXML
     private void initialize() {
         colors = new ArrayList<>();
-        colors.add(Color.rgb(10, 150, 230));
-        colors.add(Color.rgb(50, 230, 130));
-        colors.add(Color.rgb(150, 100, 200));
-        colors.add(Color.rgb(210, 200, 20));
+        colors.add(Color.rgb(0, 150, 250));
+        colors.add(Color.rgb(150, 0, 250));
+        colors.add(Color.rgb(250, 150, 0));
+        colors.add(Color.rgb(0, 250, 150));
     }
 
-    public void addShape(boolean[][] shape, int row, int col) {
-        for(int i = 0; i < shape.length; i++) {
-            for(int j = 0; j < shape[0].length; j++) {
-                if(shape[i][j]) {
+    public void addShapes(Shape shape) {
+        for (int i = 0; i < shape.getMatrix().length; i++) {
+            for (int j = 0; j < shape.getMatrix()[0].length; j++) {
+                if (shape.getMatrix()[i][j]) {
                     Rectangle rectangle = new Rectangle();
                     rectangle.setHeight(50);
                     rectangle.setWidth(50);
                     rectangle.setFill(this.colors.get(counter));
-                    this.gridPane.add(rectangle, j + col, i + row);
+                    this.gridPane.add(rectangle, j + shape.getCol(), i + shape.getRow());
                 }
             }
         }
