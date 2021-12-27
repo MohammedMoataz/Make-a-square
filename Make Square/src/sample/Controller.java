@@ -41,19 +41,6 @@ public class Controller {
 
     @FXML
     private void initialize() {
-        this.initializeShapes();
-
-        this.countA.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countB.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countC.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countD.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countE.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countF.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countG.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
-        this.countH.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 3));
-    }
-
-    private void initializeShapes() {
         shapes = new ArrayList<>();
 
         solution = new boolean[][]{
@@ -106,6 +93,15 @@ public class Controller {
                 {true, true},
                 {false, true}
         };
+
+        this.countA.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countB.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countC.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countD.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countE.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countF.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countG.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 4));
+        this.countH.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2));
     }
 
     public void submit(ActionEvent event) throws IOException {
@@ -170,10 +166,11 @@ public class Controller {
         for (boolean[][] shape : this.shapes) {
             for (int row = 0; row <= (this.solution.length - shape.length); row++) {
                 for (int col = 0; col <= (this.solution[0].length - shape[0].length); col++) {
-                    flag = this.addShape(shape, row, col);
+                    Shape myShape = new Shape(shape, row, col);
+                    flag = this.addShape(myShape);
 
                     if (flag) {
-                        solve.addShape(shape, row, col);
+                        solve.addShapes(myShape);
                         break;
                     }
                 }
@@ -183,26 +180,26 @@ public class Controller {
         }
 
         this.printSolution();
-        System.out.println();
     }
 
-    public boolean addShape(boolean[][] shape, int row, int col) {
+    public boolean addShape(Shape shape) {
         boolean flag = true;
 
-        for (int i = 0; i < shape.length; i++) {
-            for (int j = 0; j < shape[0].length; j++) {
-                if (shape[i][j] && this.solution[i + row][j + col]) {
+        for (int i = 0; i < shape.getMatrix().length; i++) {
+            for (int j = 0; j < shape.getMatrix()[0].length; j++) {
+                if (shape.getMatrix()[i][j] && this.solution[i + shape.getRow()][j + shape.getCol()]) {
                     flag = false;
                     break;
                 }
             }
         }
 
-        if (flag)
-            for (int i = 0; i < shape.length; i++)
-                for (int j = 0; j < shape[0].length; j++)
-                    if (shape[i][j])
-                        this.solution[i + row][j + col] = true;
+        if (flag) {
+            for (int i = 0; i < shape.getMatrix().length; i++)
+                for (int j = 0; j < shape.getMatrix()[0].length; j++)
+                    if (shape.getMatrix()[i][j])
+                        this.solution[i + shape.getRow()][j + shape.getCol()] = true;
+        }
 
         return flag;
     }
@@ -216,7 +213,7 @@ public class Controller {
         }
     }
 
-    private void rotateShape() {
+    private void rotateShape()  {
         ArrayList<boolean[][]> newShapes = new ArrayList<>();
 
         for (boolean[][] shape : this.shapes) {
