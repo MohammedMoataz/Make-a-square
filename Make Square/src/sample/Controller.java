@@ -33,17 +33,15 @@ public class Controller {
             shapeG,
             shapeH;
 
-    private boolean[][] solution;
+    private boolean[][] board;
 
     private ArrayList<boolean[][]> shapes;
-
-    private Tree<boolean[][]> tree;
 
     @FXML
     private void initialize() {
         shapes = new ArrayList<>();
 
-        solution = new boolean[][]{
+        board = new boolean[][]{
                 {false, false, false, false},
                 {false, false, false, false},
                 {false, false, false, false},
@@ -114,7 +112,7 @@ public class Controller {
         stage.setScene(scene);
 
         Solve solve = loader.getController();
-        this.solve(solve);
+        this.solve(solve, 0);
 
         stage.show();
     }
@@ -161,16 +159,47 @@ public class Controller {
         }
     }
 
-    private void solve(Solve solve) {
-        boolean flag = false;
-        for (boolean[][] shape : this.shapes) {
-            for (int row = 0; row <= (this.solution.length - shape.length); row++) {
-                for (int col = 0; col <= (this.solution[0].length - shape[0].length); col++) {
+    private boolean solve(Solve solve, int pos) {
+        boolean flag = true;
+        if (pos < shapes.size()) {
+            boolean[][] shape = this.shapes.get(pos);
+
+            for (int row = 0; row <= (this.board.length - shape.length); row++) {
+                for (int col = 0; col <= (this.board[0].length - shape[0].length); col++) {
                     Shape myShape = new Shape(shape, row, col);
-                    flag = this.addShape(myShape);
+                    flag = true;
+
+                    for (int i = 0; i < myShape.getMatrix().length; i++) {
+                        for (int j = 0; j < myShape.getMatrix()[0].length; j++) {
+                            if (myShape.getMatrix()[i][j] && this.board[i + myShape.getRow()][j + myShape.getCol()]) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (!flag)
+                            break;
+                    }
+
+                    if (flag) {
+                        for (int i = 0; i < myShape.getMatrix().length; i++)
+                            for (int j = 0; j < myShape.getMatrix()[0].length; j++)
+                                if (myShape.getMatrix()[i][j])
+                                    this.board[i + myShape.getRow()][j + myShape.getCol()] = true;
+
+                        flag = this.solve(solve, pos + 1);
+
+                        if (!flag) {
+                            for (int i = 0; i < myShape.getMatrix().length; i++)
+                                for (int j = 0; j < myShape.getMatrix()[0].length; j++)
+                                    if (myShape.getMatrix()[i][j])
+                                        this.board[i + myShape.getRow()][j + myShape.getCol()] = false;
+                        }
+                    }
 
                     if (flag) {
                         solve.addShapes(myShape);
+                        System.out.println();
+                        this.printSolution();
                         break;
                     }
                 }
@@ -178,34 +207,11 @@ public class Controller {
                     break;
             }
         }
-
-        this.printSolution();
-    }
-
-    public boolean addShape(Shape shape) {
-        boolean flag = true;
-
-        for (int i = 0; i < shape.getMatrix().length; i++) {
-            for (int j = 0; j < shape.getMatrix()[0].length; j++) {
-                if (shape.getMatrix()[i][j] && this.solution[i + shape.getRow()][j + shape.getCol()]) {
-                    flag = false;
-                    break;
-                }
-            }
-        }
-
-        if (flag) {
-            for (int i = 0; i < shape.getMatrix().length; i++)
-                for (int j = 0; j < shape.getMatrix()[0].length; j++)
-                    if (shape.getMatrix()[i][j])
-                        this.solution[i + shape.getRow()][j + shape.getCol()] = true;
-        }
-
         return flag;
     }
 
     private void printSolution() {
-        for (boolean[] shape : this.solution) {
+        for (boolean[] shape : this.board) {
             for (boolean cell : shape) {
                 System.out.print(cell + " ");
             }
@@ -213,7 +219,7 @@ public class Controller {
         }
     }
 
-    private void rotateShape(boolean[][] matrix) {
+    private void rotate90Deg(boolean[][] matrix) {
         for (boolean[] array : matrix) {
             for (boolean cell : array) {
                 System.out.print(cell + " ");
