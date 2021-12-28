@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
@@ -112,7 +113,15 @@ public class Controller {
         stage.setScene(scene);
 
         Solve solve = loader.getController();
-        this.solve(solve, 0);
+        boolean sol = this.solve(solve, 0);
+
+        if(!sol) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("No solution");
+            alert.setHeaderText("No solution found");
+            alert.setContentText("Try again!");
+            alert.show();
+        }
 
         stage.show();
     }
@@ -163,6 +172,8 @@ public class Controller {
         boolean flag = true;
         if (pos < shapes.size()) {
             boolean[][] shape = this.shapes.get(pos);
+            if(pos > 1)
+                shape = this.rotate90Deg(shape);
 
             for (int row = 0; row <= (this.board.length - shape.length); row++) {
                 for (int col = 0; col <= (this.board[0].length - shape[0].length); col++) {
@@ -219,15 +230,7 @@ public class Controller {
         }
     }
 
-    private void rotate90Deg(boolean[][] matrix) {
-        for (boolean[] array : matrix) {
-            for (boolean cell : array) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-
+    private boolean[][] rotate90Deg(boolean[][] matrix) {
         int row = matrix.length;
         int col = matrix[0].length;
         boolean[][] rotated = new boolean[col][row];
@@ -237,13 +240,6 @@ public class Controller {
                 rotated[col - j - 1][i] = matrix[i][j];
             }
         }
-
-        for (boolean[] array : rotated) {
-            for (boolean cell : array) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        return rotated;
     }
 }
